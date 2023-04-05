@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useEffect } from "react";
 const Todointerface = () => {
-    const [todoList, setTodoList] = useState('Add task here...')
+    const [todoList, setTodoList] = useState('')
     const [todoArray, setTodoArray] = useState([])
+    const [showPopup, setShowPopup] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     function TodoList(e) {
         setTodoList(e.target.value)
@@ -13,12 +16,47 @@ const Todointerface = () => {
             {id: id, text: todoList}
         ])
         setTodoList('')
-    }
+        const input = document.querySelector('.input-field')
+        if(input.value.trim() === ''){
+            setShowPopup(true);
+            setTimeout(() => {
+                setShowPopup(false);
+              }, 2000); 
+        }else{
+            setShowPopup(false);
+            setShowSuccess(true);
+            setTodoList('');
+            setTimeout(() => {
+              setShowSuccess(false);
+            }, 2000);
 
+            
+        }
+    }
+    useEffect(() => {
+        localStorage.setItem('todoList', JSON.stringify(todoList));
+      }, [todoList]);
+
+      useEffect(() => {
+        const savedTodoList = localStorage.getItem('todoList');
+        if (savedTodoList) {
+          setTodoList(JSON.parse(savedTodoList));
+        }
+      }, []);
     return ( 
         <div>
             <div>
-                <input type="text" value={todoList} onChange={TodoList} required />
+            {showPopup && (
+                <div style={{ background: 'red', color: 'white', padding: 10,  }}>
+                  Please enter a todo item!
+                </div>
+              )}
+              {showSuccess && (
+                <div style={{ background: 'green', color: 'white', padding: 10 }}>
+                  Todo added successfully!
+                </div>
+              )}
+                <input className='input-field' type="text" value={todoList} placeholder='Add task here..' onChange={TodoList} required />
                 <button onClick={addTodoList}>Add</button>
             </div>
             <div>
