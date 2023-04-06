@@ -1,71 +1,85 @@
 import { useState } from "react";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 const Todointerface = () => {
-    const [todoList, setTodoList] = useState('')
-    const [todoArray, setTodoArray] = useState([])
-    const [showPopup, setShowPopup] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
+  const [todoList, setTodoList] = useState('')
+  const [todoArray, setTodoArray] = useState([])
+  const [showPopup, setShowPopup] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [id, setId] = useState(0);
 
-    function TodoList(e) {
-        setTodoList(e.target.value)
+  function TodoList(e) {
+    setTodoList(e.target.value)
+  }
+
+  function deleteTodoList(){
+    setTodoArray(
+      todoArray.filter((todo) => todo.id !== id)
+    )
+  }
+
+
+  function addTodoList(e){ 
+    if (todoList.trim() === '') {
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
+      return;
     }
-    let id = 0
-    function addTodoList(e){ 
-        setTodoArray([
-            ...todoArray,
-            {id: id, text: todoList}
-        ])
-        setTodoList('')
-        const input = document.querySelector('.input-field')
-        if(input.value.trim() === ''){
-            setShowPopup(true);
-            setTimeout(() => {
-                setShowPopup(false);
-              }, 2000); 
-        }else{
-            setShowPopup(false);
-            setShowSuccess(true);
-            setTodoList('');
-            setTimeout(() => {
-              setShowSuccess(false);
-            }, 2000);
 
-            
-        }
-    }
-    useEffect(() => {
-        localStorage.setItem('todoList', JSON.stringify(todoList));
-      }, [todoList]);
+    setTodoArray([
+      ...todoArray,
+      {id: id, text: todoList, count: todoArray.length + 1},
+    ]);
+    setId(id + 1);
+    setTodoList('');
+    setShowPopup(false);
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 2000);      
+  }
 
-      useEffect(() => {
-        const savedTodoList = localStorage.getItem('todoList');
-        if (savedTodoList) {
-          setTodoList(JSON.parse(savedTodoList));
-        }
-      }, []);
-    return ( 
-        <div>
-            <div>
-            {showPopup && (
-                <div style={{ background: 'red', color: 'white', padding: 10,  }}>
-                  Please enter a todo item!
-                </div>
-              )}
-              {showSuccess && (
-                <div style={{ background: 'green', color: 'white', padding: 10 }}>
-                  Todo added successfully!
-                </div>
-              )}
-                <input className='input-field' type="text" value={todoList} placeholder='Add task here..' onChange={TodoList} required />
-                <button onClick={addTodoList}>Add</button>
-            </div>
-            <div>
-                {todoArray.map(todo =>(
-                    <p key={todo.id}>{todo.text}</p>
-                ))}
-            </div>
-        </div>
-     );
+  return (
+    <div>
+      <div>
+        <input 
+          className='input-field bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500  w-9/12 p-2.5' 
+          type="text" 
+          value={todoList} 
+          placeholder='Add task here..' 
+          onChange={TodoList} 
+          required 
+        />
+        <button 
+          className="text-white bg-blue-700 hover:bg-blue-800  focus:outline-none  font-medium  text-sm  sm:w-auto px-5 py-2.5 text-center" 
+          onClick={addTodoList}
+        >
+          Add
+        </button>
+
+        {showPopup && (
+          <div className="bg-red-500 text-white  p-4 w-11/12 ml-3">
+            Please enter a task item!
+          </div>
+        )}
+        {showSuccess && (
+          <div className="bg-green-500 text-white  p-4 w-11/12 ml-2">
+            Task added successfully!
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        {todoArray.map(todo =>(
+          <p className="text-left text-lg text-gray-500 font-medium py-2" key={todo.id}>
+            {todo.count}:{' '}{todo.text}
+             <button className=" bg-red-700 text-white p-2  text-sm  rounded-md mx-2" onClick={deleteTodoList}>Delete</button>
+             <button className="bg-green-700 text-white p-2  text-sm rounded-md mx-2">Edit</button> 
+          </p>
+        ))}
+      </div>
+    </div>
+  );
 }
- 
+
 export default Todointerface;
