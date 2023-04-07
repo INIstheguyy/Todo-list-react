@@ -6,19 +6,24 @@ const Todointerface = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [id, setId] = useState(0);
+  // const [editTodoList, setEditTodoList] = useState(null);
 
   function TodoList(e) {
     setTodoList(e.target.value)
   }
 
   function deleteTodoList(id){
-    setTodoArray(
-      todoArray.filter(todo => todo.id !== id)
-    )
+    const newTodoArray = todoArray.filter((todo) => todo.id !== id);
+    setTodoArray(newTodoArray.map((todo, index) => ({ ...todo, count: index + 1 })));
   }
-  function editTodoList(){
-    console.log("editTodoList");
+
+  function editTodoList(id){
+    const selectedItem = todoArray.find((item) => item.id === id);
+    setTodoList(selectedItem.text);
+    const filteredArray = todoArray.filter((item) => item.id !== id).map((todo, index) => ({ ...todo, count: index + 1 }));
+    setTodoArray(filteredArray);
   }
+
 
 
   function addTodoList(e){ 
@@ -77,11 +82,11 @@ const Todointerface = () => {
           <p className="text-left text-lg text-gray-500 font-medium py-2" key={todo.id}>
             {todo.count}:{' '}{todo.text}
              <button className=" bg-red-700 text-white p-2  text-sm  rounded-md mx-2" onClick={() => deleteTodoList(todo.id)}>Delete</button>
-             <button className="bg-green-700 text-white p-2  text-sm rounded-md mx-2" onClick={editTodoList}>Edit</button> 
+             <button className="bg-green-700 text-white p-2  text-sm rounded-md mx-2" onClick={() => editTodoList(todo.id)}>Edit</button> 
           </p>
         ))}
       </div>
-    </div>
+    </div> 
   );
 }
 
