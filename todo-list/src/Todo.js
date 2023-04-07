@@ -11,10 +11,13 @@ const Todointerface = () => {
     setTodoList(e.target.value)
   }
 
-  function deleteTodoList(){
+  function deleteTodoList(id){
     setTodoArray(
-      todoArray.filter((todo) => todo.id !== id)
+      todoArray.filter(todo => todo.id !== id)
     )
+  }
+  function editTodoList(){
+    console.log("editTodoList");
   }
 
 
@@ -73,8 +76,8 @@ const Todointerface = () => {
         {todoArray.map(todo =>(
           <p className="text-left text-lg text-gray-500 font-medium py-2" key={todo.id}>
             {todo.count}:{' '}{todo.text}
-             <button className=" bg-red-700 text-white p-2  text-sm  rounded-md mx-2" onClick={deleteTodoList}>Delete</button>
-             <button className="bg-green-700 text-white p-2  text-sm rounded-md mx-2">Edit</button> 
+             <button className=" bg-red-700 text-white p-2  text-sm  rounded-md mx-2" onClick={() => deleteTodoList(todo.id)}>Delete</button>
+             <button className="bg-green-700 text-white p-2  text-sm rounded-md mx-2" onClick={editTodoList}>Edit</button> 
           </p>
         ))}
       </div>
