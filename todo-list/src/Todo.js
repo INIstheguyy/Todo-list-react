@@ -1,12 +1,29 @@
 import { useState } from "react";
-// import { useEffect } from "react";
+import { useEffect } from "react";
 const Todointerface = () => {
   const [todoList, setTodoList] = useState('')
   const [todoArray, setTodoArray] = useState([])
   const [showPopup, setShowPopup] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [id, setId] = useState(0);
-  // const [editTodoList, setEditTodoList] = useState(null);
+
+  useEffect(() => {
+    const savedTodo = localStorage.getItem('todoList');
+  
+    if (savedTodo) {
+      setTodoArray(JSON.parse(savedTodo));
+    }
+  }, []);
+
+  useEffect(() => {
+    try{
+      const savedTodo = JSON.parse(localStorage.getItem('todoList'))
+      setTodoArray(savedTodo);
+    } 
+    catch(err){
+      console.log(err);
+    }
+  }, []);
 
   function TodoList(e) {
     setTodoList(e.target.value)
@@ -57,7 +74,6 @@ const Todointerface = () => {
           value={todoList} 
           placeholder='Add task here..' 
           onChange={TodoList} 
-          required 
         />
         <button 
           className="text-white bg-blue-700 hover:bg-blue-800  focus:outline-none  font-medium  text-sm  sm:w-auto px-5 py-2.5 text-center" 

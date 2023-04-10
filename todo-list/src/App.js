@@ -1,6 +1,6 @@
 import './index.css';
 import Todointerface from './Todo';
-import "@fortawesome/fontawesome-free/css/all.css"; // or individual icons as required
+
 
 
 
